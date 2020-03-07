@@ -27,12 +27,15 @@ const PlaylistModel = types.model("Playlist", {
   collaborative: types.boolean
 })
 
-const RootModel = types.model("Root", {
+export const RootModel = types.model("Root", {
   playlists: types.array(PlaylistModel),
   tracks: types.array(TrackModel)
 })
-
-export { RootModel }
+.actions(state => ({
+  addPlaylist(newPlaylist: Playlist) {
+    state.playlists.push(newPlaylist)
+  }
+}))
 
 export type Artist = Instance<typeof ArtistModel>
 export type Track = Instance<typeof TrackModel>

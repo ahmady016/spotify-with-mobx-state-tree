@@ -1,6 +1,7 @@
+import { onSnapshot } from 'mobx-state-tree'
 import { RootModel } from './index'
 
-export const initialRootState = RootModel.create({
+const initialState = {
   playlists: [{
     id: '37i9dQZF1DXaXB8fQg7xif',
     name: 'Dance Party',
@@ -24,4 +25,8 @@ export const initialRootState = RootModel.create({
       type: 'artist'
     }]
   }]
-})
+}
+
+export const initialRootInstance = RootModel.create(initialState)
+
+onSnapshot(initialRootInstance, snapshot => console.log("Snapshot: ", snapshot))
