@@ -1,43 +1,56 @@
 import { types, Instance } from 'mobx-state-tree'
 
-const ArtistModel = types.model("artist", {
-  id: types.identifier,
-  name: types.string,
-  type: types.string
-})
+import { playlistsResponseModel, Playlist } from './PlaylistsResponse'
+import { tracksResponseModel, Track } from './TracksResponse'
 
-const TrackModel = types.model("Track", {
-  id: types.identifier,
-  name: types.string,
-  added_at: types.Date,
-  primary_color: types.string,
-  popularity: types.number,
-  duration_ms: types.number,
-  is_local: types.boolean,
-  artists: types.array(ArtistModel)
-})
-
-const PlaylistModel = types.model("Playlist", {
-  id: types.identifier,
-  name: types.string,
-  description: types.string,
-  owner: types.string,
-  tracksCount: types.number,
-  imageUrl: types.string,
-  collaborative: types.boolean
-})
+import { request } from '../_helpers/http'
+import mapPlaylist from '../_helpers/mapPlaylist'
+import mapTrack from '../_helpers/mapTrack'
 
 export const RootModel = types.model("Root", {
-  playlists: types.array(PlaylistModel),
-  tracks: types.array(TrackModel)
+  playlistsResponse: playlistsResponseModel,
+  tracksResponse: tracksResponseModel
 })
-.actions(state => ({
-  addPlaylist(newPlaylist: Playlist) {
-    state.playlists.push(newPlaylist)
+.views(state => ({
+  get playlistArtists() : any[] {
+    return state.tracksResponse.data.length
+      ? state.tracksResponse.data
+        .reduce<any[]>((artists: any, track: Track) => [...artists, ...track.artists], [])
+        .sort((a: any, b: any) => (a.name > b.name) ? 1 : -1)
+      : []
   }
 }))
+.actions(state => ({
+  setPlaylistsToPending() : any {
+    (state.playlistsResponse as any) = { loading: true, error: '', data: [] }
+  },
+  setPlaylistsToFulfilled(status: string, response: any) : any {
+    state.playlistsResponse.loading = false
+    if(status === 'error')
+      state.playlistsResponse.error = response
+    if(status === 'success')
+    (state.playlistsResponse.data as any) = (response.playlists.items as []).map(mapPlaylist)
+  },
+  async getPlaylists(offset: number) {
+    this.setPlaylistsToPending()
+    const { status, response } = await request<Playlist>(['get', `/browse/featured-playlists?limit=5&offset=${offset}`])
+    this.setPlaylistsToFulfilled(status, response)
+  },
+  setTracksToPending() : any {
+    (state.tracksResponse as any) = { loading: true, error: '', data: [] }
+  },
+  setTracksToFulfilled(status: string, response: any) : any {
+    state.tracksResponse.loading = false
+    if(status === 'error')
+      state.tracksResponse.error = response
+    if(status === 'success')
+    (state.tracksResponse.data as any) = (response.items as []).map(mapTrack).filter(Boolean)
+  },
+  async getTracks(id: string) {
+    this.setTracksToPending()
+    const { status, response } = await request<Track>(['get', `/playlists/${id}/tracks`])
+    this.setTracksToFulfilled(status, response)
+  },
+}))
 
-export type Artist = Instance<typeof ArtistModel>
-export type Track = Instance<typeof TrackModel>
-export type Playlist = Instance<typeof PlaylistModel>
 export type Root = Instance<typeof RootModel>

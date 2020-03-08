@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios'
 
 export const INITIAL_RESPONSE = { loading: false, error: '', data: [] }
-const ACCESS_TOKEN = 'BQCbYpj2I6mMCjfk5OeJfABHM_7ar-iFbLvtv4VJ1bMAY4xvp-KvKh9SGEDtziKFGc_DI1oxaUF8baGk5lVug0x5tgHgN_9Hy0ogz--dncQqkWZaE2fIO9bwx6NEpZ3ypsT1owW_j0St8A5vDKCZ1a8Vzs80PElp0VGtbGmlhHbOdRPgLxRalQhHp2qHZKUBSCXt2c24Pj5NwIoPPcDO7ZU'
+const ACCESS_TOKEN = 'BQBPyPKWdIQjqdwYZY_DAk8FrCb5N4j1c7Ha3qMRg2juQLArJGqA0EDmdS30pJyEUuTqiw-XZkMCfE2PC1OQLr3m-OQjNXsK1wIj9OqaW72kpqEzrXamIc70M8M6Kj_JK3BDKujq94jUdDzR8fJVLPlCOupYq3M9dJ-v3ArOGadrS13h9HR6V6KuTSZct3IIsENcm80_gwBQGyb2E_IU-tA'
 // set the base API URL
 axios.defaults.baseURL = 'https://api.spotify.com/v1'
 // Add ACCESS_TOKEN Authorization header using Axios Interceptors

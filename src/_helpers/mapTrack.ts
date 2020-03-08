@@ -1,4 +1,4 @@
-import { Track, Artist} from './../_store/index'
+import { Track, Artist} from '../_store/TracksResponse'
 
 const mapArtist = (artist: any) : Artist => ({
   id: artist.id,

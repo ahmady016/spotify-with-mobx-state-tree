@@ -1,10 +1,11 @@
 import React from 'react'
-import { onSnapshot } from 'mobx-state-tree'
 
-import { initialRootInstance } from './rootInstance'
+import { MSTContext } from './instance'
 
 export default function useStore() {
-	const [snapshot, setSnapshot] = React.useState<any>(initialRootInstance)
-	onSnapshot(initialRootInstance, newSnapshot => void setSnapshot(newSnapshot))
-	return { snapshot }
+	const store = React.useContext(MSTContext)
+	if (store === null) {
+    throw new Error("Store cannot be null, please add a context provider");
+  }
+	return { store }
 }

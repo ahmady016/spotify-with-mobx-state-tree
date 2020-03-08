@@ -1,4 +1,4 @@
-import { Playlist } from './../_store/index'
+import { Playlist } from '../_store/PlaylistsResponse'
 
 export default (playlist: any) : Playlist => ({
   id: playlist.id,
